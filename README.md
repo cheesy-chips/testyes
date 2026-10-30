@@ -25,7 +25,9 @@ Only my code and my data:
 - the boot loader (`xnuloader/`), my programs and libraries (`userland/src/`), tools (`tools/`),
   build and run scripts;
 - `prebuilt/`: the kernel, loader and libraries built from this repository;
-- `devices/poco-x5-pro/`: what one phone needs (its UEFI port, device tree, firmware script).
+- `devices/poco-x5-pro/`: what one phone needs (its UEFI port, device tree, firmware script);
+- `devices/galaxy-s4/`: groundwork for a second, 32-bit phone (constants, a boot-image packer, a survey,
+  a self-test) and the measurements behind a plan for it. It does not boot yet.
 
 Not in the repository, never:
 
@@ -130,18 +132,28 @@ module, or the open lzfse library gets built). User space and the images: `REST=
 | `userland/` | my programs and libraries (`src/`), the image build, launchd jobs |
 | `sysimage/` | scripts that fetch and unpack the OS files from the IPSW (none of the files themselves) |
 | `devices/poco-x5-pro/` | one phone: its UEFI port, device tree, prebuilt UEFI images, firmware script, tools |
-| `tools/` | APFS, firmware, QMI tests, run scripts |
+| `devices/galaxy-s4/` | a second phone, groundwork only: SoC constants, boot-image packer, read-only survey, self-test |
+| `tools/` | APFS, firmware, QMI tests, run scripts; `xnu-arm32-survey.sh`, `xnu-port-check.py`, `xnu-abi-diff.py`: measuring other XNU releases |
 | `qemu/` | running in QEMU |
-| `docs/` | `notes.md`: the detailed notes (Russian); `cellular.md`: cellular; `air.md`, `metal.md`: the GPU |
+| `docs/` | `notes.md`: the detailed notes (Russian); `cellular.md`: cellular; `air.md`, `metal.md`: the GPU; `s4-armv7-port.md`: the Galaxy S4 |
 | `prebuilt/` | the built kernel, loader and libraries |
 
 ## Devices
 
 The kernel, loader and user space are shared. Everything about one phone lives in
-`devices/<name>/`: its UEFI, device tree, firmware list and tools. Today there is one,
+`devices/<name>/`: its UEFI, device tree, firmware list and tools. Today there is one that runs,
 `devices/poco-x5-pro/`, and its README is the map of what a port to another Qualcomm phone must bring.
 The phone's drivers are the files `xnu/files/bsd/dev/hakios.*.c`; the head of each says where its
 numbers came from.
+
+The second directory, `devices/galaxy-s4/`, is a different kind of port and is **groundwork only: it
+does not boot**. The Galaxy S4 is a 32-bit ARMv7 phone with no `fastboot`, so it needs a 32-bit XNU
+(the one here, `xnu-8796.121.2`, has no 32-bit code left; Apple's last release that does is
+`xnu-8020.140.41`), a 32-bit loader, and a 32-bit iOS: 10.3.x is the newest, and the older ones that
+were looked at (5.1.1 to 9.3.5) are encrypted, which this project does not undo. What exists is the
+measurements behind that choice, the SoC's constants, a boot-image packer, a read-only survey of a real
+phone and a self-test (`make s4-check`); what is still to write and in what order is in
+`docs/s4-armv7-port.md`.
 
 ## Cellular
 

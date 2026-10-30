@@ -14,6 +14,13 @@
 #   make prebuilt        refresh prebuilt/ from what was built (tools/update-prebuilt.sh)
 #   make clean           build output of the kernel, loader and images
 #
+# The Galaxy S4 (32-bit ARM) groundwork; nothing of it boots a phone yet (docs/s4-armv7-port.md):
+#   make s4-check        its self-test; no phone, no network (devices/galaxy-s4/check.sh)
+#   make s4-survey       ask an S4 on adb what it is, read-only (devices/galaxy-s4/pull-soc.sh)
+#   make xnu-survey      which XNU releases carry 32-bit ARM code (tools/xnu-arm32-survey.sh)
+#   make xnu-port-check TREE=DIR       how much of xnu/hakios.patch fits another XNU tree
+#   make xnu-abi-diff OLD=DIR NEW=DIR  what an older user space would miss in a newer kernel
+#
 #   DEVICE=poco-x5-pro   the device directory under devices/ (default poco-x5-pro)
 #   ARGS="..."           kernel arguments for make phone (default: everything the phone has)
 #   SECS=600             the session's length for make phone / make qemu
@@ -26,10 +33,12 @@ ARGS_OPEN ?= cpus=1
 ARGS ?= touchscreen=1 gpu=1 adsp=1 sound=4 wifi=1 haptic=5 modem=1 modem_again=1 modem_buffer=0xa8000000
 IMAGE_OPTS ?= REST=1
 
-.PHONY: help fetch images kernel loader loader-open hello qemu qemu-open phone prebuilt clean all
+.PHONY: help fetch images kernel loader loader-open hello qemu qemu-open phone prebuilt clean all \
+        s4-check s4-survey xnu-survey xnu-port-check xnu-abi-diff
 
+# the comment at the top, up to the first blank line
 help:
-	@sed -n '2,23p' Makefile | sed 's/^# \{0,1\}//'
+	@sed -n '1,/^$$/p' Makefile | sed -e '$$d' -e 's/^# \{0,1\}//'
 
 all: kernel loader images
 
@@ -82,3 +91,22 @@ prebuilt:
 
 clean:
 	rm -rf xnu-src/xnu-8796.121.2/BUILD xnuloader/loader.obj xnuloader/loader.efi userland/root.apfs userland/system.apfs userland/obj
+
+# The Galaxy S4 groundwork (docs/s4-armv7-port.md). None of these touches a phone except s4-survey,
+# which only reads, and none needs anything of Apple's or Samsung's.
+s4-check:
+	devices/galaxy-s4/check.sh
+
+s4-survey:
+	devices/galaxy-s4/pull-soc.sh
+
+xnu-survey:
+	tools/xnu-arm32-survey.sh
+
+xnu-port-check:
+	@[ -n "$(TREE)" ] || { echo "usage: make xnu-port-check TREE=path/to/a/checkout/of/an/xnu/release" >&2; exit 2; }
+	tools/xnu-port-check.py "$(TREE)"
+
+xnu-abi-diff:
+	@[ -n "$(OLD)" ] && [ -n "$(NEW)" ] || { echo "usage: make xnu-abi-diff OLD=path NEW=path (checkouts of two xnu releases)" >&2; exit 2; }
+	tools/xnu-abi-diff.py "$(OLD)" "$(NEW)"

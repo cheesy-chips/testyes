@@ -16,7 +16,9 @@ This supersedes the summary in `NOTICE`, which stays as the short, canonical lis
 | LinuxKPI / Linux headers | `wifi/lx/include/linux/`, `wifi/lx/include/net/` | Linux / FreeBSD LinuxKPI | GPL-2.0 (Linux) / BSD-2-Clause (FreeBSD) | small compatibility headers; see each file's notice |
 | Linux DRM shim | `tools/mesa/hakios-drm/`, `xf86drm.h` | Linux / X.Org | MIT | build-time shim for Mesa |
 | AIR / Metal-library tooling | `tools/mesa/air/` | HakiOS (Darwin on redwood contributors) | MIT | our own; LLVM bitcode layout is a published format |
-| mkbootimg.py | `devices/poco-x5-pro/prebuilt/mkbootimg.py` | Android Open Source Project | Apache-2.0 | |
+| mkbootimg.py | `devices/poco-x5-pro/prebuilt/mkbootimg.py` | Android Open Source Project | Apache-2.0 | shared by both devices: `devices/galaxy-s4/mkbootimg.sh` calls it |
+| Facts about the Qualcomm APQ8064 | `devices/galaxy-s4/apq8064.h` | read from Linux's `qcom-apq8064.dtsi` and `timer-qcom.c`, the mainline "Add Samsung Galaxy S4" patch, LineageOS's `jf-common` board file | MIT (our file) | addresses, interrupt numbers and what a register does are facts; no text or code of the sources (GPL-2.0, Apache-2.0) is copied, and nothing of Samsung's; each constant names its source |
+| Galaxy S4 scripts and XNU measuring tools | `devices/galaxy-s4/*.sh`, `tools/xnu-arm32-survey.sh`, `tools/xnu-port-check.py`, `tools/xnu-abi-diff.py` | HakiOS | MIT | the tools read other XNU releases from a temporary directory or a clone the user makes; nothing of them is stored here |
 | Mu-Silicium / Project Mu derived files | `devices/poco-x5-pro/uefi/` | Project Silicium, Microsoft, contributors | BSD-2-Clause-Patent; some GPL-2.0+ OR MIT | derived parts keep upstream license |
 | Qualcomm/Xiaomi UEFI driver binaries | `devices/poco-x5-pro/uefi/files/Binaries/` | Qualcomm / Xiaomi (from device `xbl.img`) | vendor's — **to verify** | needed only to rebuild UEFI; removable, re-extract with UEFIReader |
 | FocalTech touch firmware header | `xnu/files/bsd/dev/hakios.focaltech_fw.h` | FocalTech (device firmware blob) | vendor's — **to verify** | candidate to move to pull-from-device |
@@ -28,6 +30,8 @@ This supersedes the summary in `NOTICE`, which stays as the short, canonical lis
 | Component | Fetched by | Origin | License |
 |---|---|---|---|
 | iOS 16.5 IPSW (user space of the system image) | `sysimage/fetch.sh` | Apple | Apple's — user supplies, user's own copy |
+| iOS 10.3.x IPSW (the user space the Galaxy S4 port plans to run, `docs/s4-armv7-port.md`) | nothing yet | Apple | Apple's — user supplies, user's own copy |
+| Other XNU releases (xnu-3789.70.16, 4570.71.2, 6153.141.1, 7195.141.2, 8020.140.41), for measuring | `tools/xnu-arm32-survey.sh` (file lists only); a clone the user makes for `tools/xnu-port-check.py` and `tools/xnu-abi-diff.py` | Apple, github.com/apple-oss-distributions/xnu | APSL 2.0 |
 | iPhoneOS 16.5 SDK | `xnu-deps/setup.sh` (github.com/theos/sdks) | Apple (headers) via theos | Apple's / theos |
 | Apple open sources (AvailabilityVersions, libdispatch, libpthread, cctools, bootstrap_cmds) | `xnu-deps/setup.sh` | Apple | APSL 2.0 |
 | MacOSX13.3 SDK (Kernel.framework DriverKit headers only) | `xnu-deps/setup.sh` | Apple via joseluisq/macosx-sdks | Apple's |

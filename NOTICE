@@ -20,6 +20,11 @@ In the repository:
 - the Wi-Fi driver: Linux's ath11k (BSD-3-Clause-Clear) and FreeBSD's LinuxKPI headers (BSD-2-Clause) are
   fetched by tools/mk-ath11k.sh at pinned releases and built on our layer wifi/lx (MIT); only the layer is here.
 
+- the Galaxy S4 constants, devices/galaxy-s4/apq8064.h (MIT): facts about the Qualcomm APQ8064 (addresses,
+  interrupt numbers, what a register does) read from Linux's qcom-apq8064.dtsi and timer-qcom.c (GPL-2.0),
+  the mainline "Add Samsung Galaxy S4" device-tree patch and LineageOS's jf-common board file (Apache-2.0).
+  Each constant names its source; no text or code of them is copied, and nothing of Samsung's.
+
 Fetched at build time, never committed:
 
 - the iOS 16.5 IPSW (Apple): the user space of the system image; sysimage/fetch.sh downloads it from
@@ -30,3 +35,9 @@ Fetched at build time, never committed:
   user's own phone (devices/poco-x5-pro/pull-firmware.sh).
 - lzfse (Apple, BSD-3-Clause), built by xnuloader/mkidentity.sh when no LZFSE decoder is installed.
 - Mesa (for GL=1 images), Procursus and Sileo packages (tools/mk-jb.sh): their own licenses.
+- other XNU releases (xnu-3789.70.16, 4570.71.2, 6153.141.1, 7195.141.2, 8020.140.41; Apple, APSL 2.0), read
+  by the measuring tools of the Galaxy S4 port (tools/xnu-arm32-survey.sh fetches file lists into a temporary
+  directory; tools/xnu-port-check.py and tools/xnu-abi-diff.py read a clone the user makes, as
+  docs/s4-armv7-port.md shows). Measurement only: nothing of them is committed.
+- the iOS 10.3.x IPSW (Apple), the user space the S4 port plans to run; nothing in the repository fetches it
+  yet. Its license is Apple's.

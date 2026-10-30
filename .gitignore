@@ -36,6 +36,9 @@ __pycache__/
 *.orig
 *.rej
 
+# the survey of somebody's own Galaxy S4 (devices/galaxy-s4/pull-soc.sh): theirs, not ours
+/devices/galaxy-s4/soc-dump/
+
 /xnuloader/*
 !/xnuloader/build.sh
 !/xnuloader/efi.h
